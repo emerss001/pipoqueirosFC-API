@@ -5,7 +5,7 @@ import { syncRound } from "../service/sync.service";
 export function startSyncCron() {
     // 0 4 * * 4 -> toda quinta-feira às 04:00 da manhã
     cron.schedule(
-        "* * * * *",
+        "0 4 * * 4",
         async () => {
             console.log("[CRON - Agendador] Iniciando rotina semanal de sincronização...");
 
