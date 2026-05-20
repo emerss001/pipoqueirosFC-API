@@ -1,0 +1,584 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: PipoqueirosFC
+meta:
+  id: wrk_eaa7bbd267e9420e952b58de5032cec0
+  created: 1778538810325
+  modified: 1778538810325
+  description: ""
+collection:
+  - name: Partidas
+    meta:
+      id: fld_407050255bbe46dca8a8b3ee25957a77
+      created: 1778545450501
+      modified: 1778545450501
+      sortKey: -1778545450501
+      description: ""
+    children:
+      - url: "{{ _._server }}/matches"
+        name: criar uma PARTIDA
+        meta:
+          id: req_a70d3ab76fc44b1d868b5aea5a043204
+          created: 1778539049692
+          modified: 1778547465015
+          isPrivate: false
+          description: ""
+          sortKey: -1778545464049
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "round": 10,
+                "home_team_id": "51b9e517-71cf-46aa-9d12-db1cc8579b22",
+                "away_team_id": "3c490811-2b39-4ebd-9398-8d17032f3037",
+                "match_date": "2026-05-12T20:00:00.000Z"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/matches/current"
+        name: BUSCAR partidas da rodada atual
+        meta:
+          id: req_01060b41c2154382acb2a8e889b69bc9
+          created: 1778546296724
+          modified: 1778546335663
+          isPrivate: false
+          description: ""
+          sortKey: -1778546296724
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/matches/b3e2464d-e908-44ec-9e47-d9caa15798ed/status"
+        name: atualizar status da partida
+        meta:
+          id: req_cd80a785a4f046218637f226cd50aed0
+          created: 1778546579636
+          modified: 1778546661707
+          isPrivate: false
+          description: ""
+          sortKey: -1778546579636
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"status": "IN_PROGRESS"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/matches/b635a64f-4145-46bb-8d17-01fd22af5a5f/finish"
+        name: finalizar partida
+        meta:
+          id: req_12c64ce543164f0a9f7ef104343bcd96
+          created: 1778546862213
+          modified: 1778547596864
+          isPrivate: false
+          description: ""
+          sortKey: -1778546862213
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"home_score": 3,
+            	"away_score": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Bolão
+    meta:
+      id: fld_ff17b0f3371140599ac9322d4e64e1fe
+      created: 1778545478074
+      modified: 1778545478074
+      sortKey: -1778545478074
+      description: ""
+    children:
+      - url: "{{ _._server }}/betting-groups"
+        name: criar um BOLÂO
+        meta:
+          id: req_70c9308a969f46a8b0ea34e7edacc2c3
+          created: 1778538831003
+          modified: 1778547383599
+          isPrivate: false
+          description: ""
+          sortKey: -1778545759466
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+                "name": "Oficial Bolão Teste",
+                "creatorId": "7718e794-a6a3-4e94-a578-d6e390ef5944"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/betting-groups/HZNNTL"
+        name: consultar BOLÂO por CÓDIGO
+        meta:
+          id: req_96d24ba3d35345bc9eeaac8e54101798
+          created: 1778538884106
+          modified: 1778547665200
+          isPrivate: false
+          description: ""
+          sortKey: -1778545759366
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/betting-groups/add-user"
+        name: adicionar USUÁRIO a um BOLÃO
+        meta:
+          id: req_86504ebeb99e4bc6bbed9d4eb7596233
+          created: 1778538922772
+          modified: 1778547414015
+          isPrivate: false
+          description: ""
+          sortKey: -1778545759266
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "userId": "85b11e38-3306-4690-85bb-859f65b6de16",
+                "bettingGroupId": "HZNNTL"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/betting-groups/HZNNTL/ranking"
+        name: listar ranking
+        meta:
+          id: req_baf7eb4115e94428bd4d8216e60a6c73
+          created: 1778547110407
+          modified: 1778547476969
+          isPrivate: false
+          description: ""
+          sortKey: -1778547110407
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/betting-groups/HZNNTL/participants"
+        name: listar participantes
+        meta:
+          id: req_b095ef41dd844c069596dcab3a561d2e
+          created: 1778547265195
+          modified: 1778547427626
+          isPrivate: false
+          description: ""
+          sortKey: -1778547265195
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Palpites
+    meta:
+      id: fld_bf628e85b71d46fd87671be548072ef2
+      created: 1778545814810
+      modified: 1778545814810
+      sortKey: -1778545814810
+      description: ""
+    children:
+      - url: "{{ _._server }}/predications "
+        name: criar um PALPITE
+        meta:
+          id: req_0514c965a4434690a5fe562efb8ea305
+          created: 1778539094940
+          modified: 1778547563356
+          isPrivate: false
+          description: ""
+          sortKey: -1778545820989
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "home_score_guess": 3,
+                "away_score_guess": 1,
+            		"result_guess": "HOME_WIN",
+                "predicationType": "EXACT_SCORE",
+                "userId": "7718e794-a6a3-4e94-a578-d6e390ef5944",
+                "matchId": "b635a64f-4145-46bb-8d17-01fd22af5a5f"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Times
+    meta:
+      id: fld_254e9c99a7b9407fabdcbc1d8e1c8cbb
+      created: 1778546097340
+      modified: 1778546097340
+      sortKey: -1778546097340
+      description: ""
+    children:
+      - url: "{{ _._server }}/teams"
+        name: criar um TIME
+        meta:
+          id: req_f6efe7a62b114e56ab4c52f570f68d83
+          created: 1778538975104
+          modified: 1778546108577
+          isPrivate: false
+          description: ""
+          sortKey: -1778546108487
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "name": "Varmengo FC",
+                "abbreviated_name": "VAR",
+                "shield_url": "url_aqui"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/teams"
+        name: LISTAR todos os times
+        meta:
+          id: req_9cc831b0539c4910aa0fc2d86dce0402
+          created: 1778546418779
+          modified: 1778546447995
+          isPrivate: false
+          description: ""
+          sortKey: -1778546418779
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Sistema
+    meta:
+      id: fld_9fe2772961394abf9ddf629bc0cebca2
+      created: 1778546148219
+      modified: 1778546148219
+      sortKey: -1778546148219
+      description: ""
+    children:
+      - url: "{{ _._server }}/system/active-round"
+        name: BUSCAR rodada atual
+        meta:
+          id: req_87e175f242794fac9475074bd9acd136
+          created: 1778546152292
+          modified: 1778546219700
+          isPrivate: false
+          description: ""
+          sortKey: -1778546152292
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/system/active-round"
+        name: ATUALIZAR rodada atual
+        meta:
+          id: req_1746371c5c884b3bb7600b8729ea25e1
+          created: 1778546201611
+          modified: 1778547450159
+          isPrivate: false
+          description: ""
+          sortKey: -1778546201611
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"round": 10
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Autenticação
+    meta:
+      id: fld_978938fb05c448bda8bf4e84d566cb9c
+      created: 1778592841661
+      modified: 1778592851396
+      sortKey: -1778592841661
+      description: ""
+    children:
+      - url: 192.168.0.109:3333/api/auth/sign-in/social
+        name: login com o google
+        meta:
+          id: req_6690940f9e004881a89daaefc8ab2ce3
+          created: 1778591368808
+          modified: 1778592869321
+          isPrivate: false
+          description: ""
+          sortKey: -1778592869257
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "provider": "google",
+              "idToken": {
+                "token": "eyJhbGciOiJSUz..."
+              }
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/api/auth/sign-up/email"
+        name: criar usuário email e senha
+        meta:
+          id: req_780f9ce7712142249080f5a8c5dbfdbd
+          created: 1778593046655
+          modified: 1778593230423
+          isPrivate: false
+          description: ""
+          sortKey: -1778593046655
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                  "name": "Nome do Usuário",
+                 "email": "usuario@email.com",
+                 "password": "senha-segura-aqui",
+                "image": "https://link-opcional-da-foto.com/foto.jpg"
+               }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _._server }}/api/auth/sign-in/email"
+        name: login com email e senha
+        meta:
+          id: req_9ed213453d5e437a94b195e52b7ad0f2
+          created: 1778593267177
+          modified: 1778593691263
+          isPrivate: false
+          description: ""
+          sortKey: -1778593267177
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                 "email": "usuario@email.com",
+                 "password": "senha-segura-aqui" 
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+          - name: Origin
+            value: http://localhost:3333
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_7cb4e2b8720cbe1813ec521efa0eb8560e243bc1
+    created: 1778538810381
+    modified: 1778593673976
+  cookies:
+    - id: 40378443-c35a-4744-9f53-aa612b564422
+      key: better-auth.session_token
+      value: KqMHyVcj8BTgyrOx3Bv5CyqNZAqM3ZGz.xsHsz4rIkM7XEaO0Au2Poi2V%2B97dBoSgCcE%2FT69Ga8U%3D
+      domain: localhost
+      path: /
+      secure: false
+      httpOnly: true
+      hostOnly: true
+environments:
+  name: Base Environment
+  meta:
+    id: env_7cb4e2b8720cbe1813ec521efa0eb8560e243bc1
+    created: 1778538810337
+    modified: 1778539172044
+    isPrivate: false
+  data:
+    _server: http://localhost:3333

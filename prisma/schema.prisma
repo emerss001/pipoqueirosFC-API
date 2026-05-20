@@ -1,0 +1,190 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum MatchStatus {
+  SCHEDULED
+  IN_PROGRESS
+  FINISHED
+}
+
+enum PredictionType {
+  EXACT_SCORE
+  MATCH_RESULT
+}
+
+enum ResultGuess {
+  HOME_WIN
+  AWAY_WIN
+  DRAW
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  name          String
+  role          Role     @default(USER)
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  createdGroups  BettingGroup[]
+  participations GroupParticipant[]
+  predictions    Prediction[]
+  sessions       Session[]
+  accounts       Account[]
+
+  @@map("users") // opcional: mapeia para 'users' no plural no banco
+}
+
+model BettingGroup {
+  id        Int      @id @default(autoincrement())
+  name      String
+  code      String   @unique
+  createdAt DateTime @default(now())
+  creatorId Int
+
+  creator      User               @relation(fields: [creatorId], references: [id])
+  participants GroupParticipant[]
+
+  @@map("betting_groups")
+}
+
+model GroupParticipant {
+  bettingGroupId Int
+  userId         Int
+  score          Int      @default(0)
+  joinedAt       DateTime @default(now()) // Útil para ordenação
+
+  bettingGroup BettingGroup @relation(fields: [bettingGroupId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@id([bettingGroupId, userId])
+  @@map("group_participants")
+}
+
+model Team {
+  id              Int     @id @default(autoincrement())
+  externalId      Int     @unique // ID vindo da API externa (ex: 1767 pro Bahia)
+  name            String
+  abbreviatedName String
+  shieldUrl       String
+  color           String? // Já deixei o espaço pra cor da API que vimos!
+
+  homeMatches Match[] @relation("HomeTeam")
+  awayMatches Match[] @relation("AwayTeam")
+
+  @@map("teams")
+}
+
+model Match {
+  id               Int         @id @default(autoincrement())
+  externalId       Int         @unique // ID da partida na API externa
+  round            Int
+  homeTeamId       Int
+  awayTeamId       Int
+  matchDate        DateTime
+  homeScore        Int?
+  awayScore        Int?
+  status           MatchStatus @default(SCHEDULED)
+  pointsCalculated Boolean     @default(false) // Trava de segurança para pontuação!
+
+  homeTeam    Team         @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam    Team         @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  predictions Prediction[]
+
+  @@map("matches")
+}
+
+model Prediction {
+  id      Int            @id @default(autoincrement())
+  userId  Int
+  matchId Int
+  bettingGroupId Int
+  type    PredictionType
+
+  // Se for EXACT_SCORE
+  homeScoreGuess Int?
+  awayScoreGuess Int?
+
+  // Se for MATCH_RESULT
+  resultGuess  ResultGuess?
+  pointsEarned Int          @default(0)
+
+  user  User  @relation(fields: [userId], references: [id])
+  match Match @relation(fields: [matchId], references: [id])
+
+  @@unique([userId, matchId, bettingGroupId])
+  @@map("predictions")
+}
+
+model SystemSettings {
+  id                 Int @id @default(autoincrement())
+  currentActiveRound Int @default(1)
+
+  @@map("system_settings")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                Int
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
