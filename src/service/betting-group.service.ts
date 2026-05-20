@@ -56,7 +56,7 @@ export async function findBettingGroupByCodeService(code: string) {
 export async function addUserToBettingGroupService(data: addUserToBettingGroupParams) {
     const bettingGroup = await prisma.bettingGroup.findFirst({
         where: {
-            OR: [{ id: data.bettingGroupId }, { code: data.bettingGroupId }],
+            id: data.bettingGroupId,
         },
     });
 
@@ -83,10 +83,10 @@ export async function addUserToBettingGroupService(data: addUserToBettingGroupPa
     });
 }
 
-export async function getBettingGroupRankingService(idOrCode: string) {
+export async function getBettingGroupRankingService(code: string) {
     const bettingGroup = await prisma.bettingGroup.findFirst({
         where: {
-            OR: [{ id: idOrCode }, { code: idOrCode }],
+            code,
         },
     });
 
@@ -107,20 +107,20 @@ export async function getBettingGroupRankingService(idOrCode: string) {
             },
         },
         orderBy: {
-            score: 'desc',
+            score: "desc",
         },
     });
 
-    return ranking.map(participant => ({
+    return ranking.map((participant) => ({
         name: participant.user.name,
         score: participant.score,
     }));
 }
 
-export async function getBettingGroupParticipantsService(idOrCode: string) {
+export async function getBettingGroupParticipantsService(code: string) {
     const bettingGroup = await prisma.bettingGroup.findFirst({
         where: {
-            OR: [{ id: idOrCode }, { code: idOrCode }],
+            code,
         },
     });
 
@@ -142,12 +142,12 @@ export async function getBettingGroupParticipantsService(idOrCode: string) {
         },
         orderBy: {
             user: {
-                name: 'asc',
+                name: "asc",
             },
         },
     });
 
-    return participants.map(participant => ({
+    return participants.map((participant) => ({
         id: participant.user.id,
         name: participant.user.name,
     }));

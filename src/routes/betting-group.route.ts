@@ -57,13 +57,13 @@ export async function bettingGroupRoute(app: FastifyInstance) {
 
     publicServer.route({
         method: "GET",
-        url: "/betting-groups/:idOrCode/ranking",
+        url: "/betting-groups/:code/ranking",
         preHandler: [authMiddleware],
         schema: {
             tags: ["Betting Groups"],
             description: "[🔒 Autenticado] Buscar ranking de um bolão",
             params: z.object({
-                idOrCode: z.string(),
+                code: z.string(),
             }),
             security: [{ bearerAuth: [] }],
         },
@@ -72,13 +72,13 @@ export async function bettingGroupRoute(app: FastifyInstance) {
 
     publicServer.route({
         method: "GET",
-        url: "/betting-groups/:idOrCode/participants",
+        url: "/betting-groups/:code/participants",
         preHandler: [authMiddleware],
         schema: {
             tags: ["Betting Groups"],
             description: "[🔒 Autenticado] Buscar participantes de um bolão",
             params: z.object({
-                idOrCode: z.string(),
+                code: z.string(),
             }),
             security: [{ bearerAuth: [] }],
         },

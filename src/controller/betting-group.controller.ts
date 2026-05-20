@@ -68,14 +68,14 @@ export async function addUserToBettingGroupController(request: FastifyRequest, r
 }
 
 export async function getBettingGroupRankingController(request: FastifyRequest, reply: FastifyReply) {
-    const { idOrCode } = request.params as { idOrCode: string };
+    const { code } = request.params as { code: string };
 
-    if (!idOrCode) {
-        return reply.status(400).send({ error: "Betting Group ID or Code is required" });
+    if (!code) {
+        return reply.status(400).send({ error: "Betting Group Code is required" });
     }
 
     try {
-        const ranking = await getBettingGroupRankingService(idOrCode);
+        const ranking = await getBettingGroupRankingService(code);
         return reply.status(200).send(ranking);
     } catch (error: any) {
         console.error("Error fetching betting group ranking:", error);
@@ -87,14 +87,14 @@ export async function getBettingGroupRankingController(request: FastifyRequest, 
 }
 
 export async function getBettingGroupParticipantsController(request: FastifyRequest, reply: FastifyReply) {
-    const { idOrCode } = request.params as { idOrCode: string };
+    const { code } = request.params as { code: string };
 
-    if (!idOrCode) {
-        return reply.status(400).send({ error: "Betting Group ID or Code is required" });
+    if (!code) {
+        return reply.status(400).send({ error: "Betting Group ID is required" });
     }
 
     try {
-        const participants = await getBettingGroupParticipantsService(idOrCode);
+        const participants = await getBettingGroupParticipantsService(code);
         return reply.status(200).send(participants);
     } catch (error: any) {
         console.error("Error fetching betting group participants:", error);

@@ -35,7 +35,7 @@ enum ResultGuess {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
+  id            String      @id @default(uuid())
   email         String   @unique
   name          String
   role          Role     @default(USER)
@@ -58,7 +58,7 @@ model BettingGroup {
   name      String
   code      String   @unique
   createdAt DateTime @default(now())
-  creatorId Int
+  creatorId String
 
   creator      User               @relation(fields: [creatorId], references: [id])
   participants GroupParticipant[]
@@ -68,7 +68,7 @@ model BettingGroup {
 
 model GroupParticipant {
   bettingGroupId Int
-  userId         Int
+  userId         String
   score          Int      @default(0)
   joinedAt       DateTime @default(now()) // Útil para ordenação
 
@@ -114,7 +114,7 @@ model Match {
 
 model Prediction {
   id      Int            @id @default(autoincrement())
-  userId  Int
+  userId  String
   matchId Int
   bettingGroupId Int
   type    PredictionType
@@ -149,7 +149,7 @@ model Session {
   updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
-  userId    Int
+  userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
@@ -161,7 +161,7 @@ model Account {
   id                    String    @id
   accountId             String
   providerId            String
-  userId                Int
+  userId                String
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
