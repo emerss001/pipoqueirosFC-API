@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import { fromNodeHeaders } from "better-auth/node";
 import { usersRoute } from "./routes/users.route";
 import { bettingGroupRoute } from "./routes/betting-group.route";
 import { predicationRoute } from "./routes/predication.route";
@@ -93,7 +94,7 @@ app.all("/api/auth/*", async (request, reply) => {
     const req = new Request(url, {
         method: request.method,
         // O TypeScript pode pedir um cast aqui dependendo da sua versão
-        headers: request.headers as HeadersInit,
+        headers: fromNodeHeaders(request.headers),
         body,
     });
 

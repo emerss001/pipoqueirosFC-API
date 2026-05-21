@@ -1,10 +1,11 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { auth } from "./auth";
 import { prisma } from "./prisma";
+import { fromNodeHeaders } from "better-auth/node";
 
 export async function authMiddleware(request: FastifyRequest, reply: FastifyReply) {
     const session = await auth.api.getSession({
-        headers: new Headers(request.headers as Record<string, string>),
+        headers: fromNodeHeaders(request.headers),
     });
 
     if (!session || !session.user) {
@@ -17,7 +18,7 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
 
 export async function adminMiddleware(request: FastifyRequest, reply: FastifyReply) {
     const session = await auth.api.getSession({
-        headers: new Headers(request.headers as Record<string, string>),
+        headers: fromNodeHeaders(request.headers),
     });
 
     if (!session || !session.user) {
