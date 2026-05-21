@@ -118,9 +118,9 @@ app.register(matchRoute);
 app.register(teamRoute);
 app.register(systemRoute);
 
-// startSyncCron();
-// startConsolidatorCron();
-// startTurnoverCron();
+startSyncCron();
+startConsolidatorCron();
+startTurnoverCron();
 
 app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
     console.log("Server running on http://localhost:3333");
