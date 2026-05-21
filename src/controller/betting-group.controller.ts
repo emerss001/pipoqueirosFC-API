@@ -46,14 +46,14 @@ export async function findBettingGroupByCodeController(request: FastifyRequest, 
 }
 
 export async function addUserToBettingGroupController(request: FastifyRequest, reply: FastifyReply) {
-    const { userId, bettingGroupId } = request.body as addUserToBettingGroupParams;
+    const { userId, bettingGroupCode } = request.body as addUserToBettingGroupParams;
 
-    if (!userId || !bettingGroupId) {
-        return reply.status(400).send({ error: "User ID and Betting Group ID are required" });
+    if (!userId || !bettingGroupCode) {
+        return reply.status(400).send({ error: "User ID and Betting Group Code are required" });
     }
 
     try {
-        await addUserToBettingGroupService({ userId, bettingGroupId });
+        await addUserToBettingGroupService({ userId, bettingGroupCode });
         return reply.status(200).send({ message: "User added to betting group successfully" });
     } catch (error: any) {
         console.error("Error adding user to betting group:", error);

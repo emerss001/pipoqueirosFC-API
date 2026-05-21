@@ -12,10 +12,10 @@ export const createBettingGroupSchema = z.object({
 
 export interface addUserToBettingGroupParams {
     userId: string;
-    bettingGroupId: number;
+    bettingGroupCode: string;
 }
 
 export const addUserToBettingGroupSchema = z.object({
     userId: z.string(),
-    bettingGroupId: z.string(),
+    bettingGroupCode: z.string(),
 });

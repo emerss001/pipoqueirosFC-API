@@ -56,7 +56,7 @@ export async function findBettingGroupByCodeService(code: string) {
 export async function addUserToBettingGroupService(data: addUserToBettingGroupParams) {
     const bettingGroup = await prisma.bettingGroup.findFirst({
         where: {
-            id: data.bettingGroupId,
+            code: data.bettingGroupCode,
         },
     });
 
