@@ -1,30 +1,24 @@
 import cron from "node-cron";
 import { prisma } from "../lib/prisma";
-import { syncRound } from "../service/sync.service";
+import { planWeeklySetup } from "../service/weekly-setup.service";
 
 export function startSyncCron() {
     // 0 4 * * 4 -> toda quinta-feira às 04:00 da manhã
     cron.schedule(
         "0 4 * * 4",
         async () => {
-            console.log("[CRON - Agendador] Iniciando rotina semanal de sincronização...");
+            console.log("[CRON - Agendador] Iniciando rotina de Setup Semanal (Quinta-feira)...");
 
             try {
-                // 1. Descobre qual é a rodada atual consultando as configurações do sistema
-                const settings = await prisma.systemSettings.findFirst();
+                // Ao invés de apenas rodar cegamente, ele vai baixar a rodada e 
+                // criar as tarefas (ScheduledTask) para a semana inteira!
+                await planWeeklySetup();
 
-                // Se não achar a configuração, assume a rodada 1 como fallback de segurança
-                const currentRound = settings ? settings.currentActiveRound : 1;
-
-                // 2. Aciona o serviço que busca na API e faz os Upserts no banco
-                await syncRound(currentRound);
-
-                console.log(`[CRON - Agendador] Sucesso! Rodada ${currentRound} sincronizada.`);
                 console.log(
-                    `---------------------- feito no dia ${new Date().toLocaleString()} ----------------------`,
+                    `---------------------- Setup concluído no dia ${new Date().toLocaleString()} ----------------------`,
                 );
             } catch (error) {
-                console.error("[CRON - Agendador] Erro crítico ao tentar sincronizar:", error);
+                console.error("[CRON - Agendador] Erro crítico no Setup Semanal:", error);
             }
         },
         {
@@ -32,5 +26,5 @@ export function startSyncCron() {
         },
     );
 
-    console.log("⏳ [CRON] Agendador semanal configurado para rodar às Quintas-feiras, 04:00 AM.");
+    console.log("⏳ [CRON] Setup Semanal configurado para rodar às Quintas-feiras, 04:00 AM.");
 }

@@ -3,11 +3,11 @@ import { createPredicationParams } from "../types/predication-types";
 import { createPredicationService } from "../service/predication.service";
 
 export async function createPredicationController(request: FastifyRequest, reply: FastifyReply) {
-    const { userId, matchId, predicationType, home_score_guess, away_score_guess, result_guess } =
+    const { userId, matchId, predicationType, home_score_guess, away_score_guess, result_guess, bettingGroupId } =
         request.body as createPredicationParams;
 
-    if (!userId || !matchId || !predicationType) {
-        return reply.status(400).send({ error: "User ID, Match ID, and Predication Type are required" });
+    if (!userId || !matchId || !predicationType || bettingGroupId === undefined) {
+        return reply.status(400).send({ error: "User ID, Match ID, Predication Type, and Betting Group ID are required" });
     }
 
     try {
@@ -18,6 +18,7 @@ export async function createPredicationController(request: FastifyRequest, reply
             home_score_guess,
             away_score_guess,
             result_guess,
+            bettingGroupId,
         });
         return reply.status(201).send(predication);
     } catch (error) {

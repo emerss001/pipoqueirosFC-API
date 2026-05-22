@@ -5,7 +5,9 @@
     "main": "index.js",
     "scripts": {
         "dev": "tsx --watch src/server.ts",
-        "push": "npx prisma db push && npx prisma generate"
+        "push": "npx prisma db push && npx prisma generate",
+        "start": "node dist/src/server.js",
+        "build": "tsc"
     },
     "keywords": [],
     "author": "",

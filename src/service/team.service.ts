@@ -5,8 +5,8 @@ export async function createTeamService(data: CreateTeamBody) {
     const team = await prisma.team.create({
         data: {
             name: data.name,
-            abbreviated_name: data.abbreviated_name,
-            shield_url: data.shield_url,
+            abbreviatedName: data.abbreviated_name,
+            shieldUrl: data.shield_url,
         },
     });
 
@@ -16,7 +16,7 @@ export async function createTeamService(data: CreateTeamBody) {
 export async function getAllTeamsService() {
     const teams = await prisma.team.findMany({
         orderBy: {
-            name: 'asc',
+            name: "asc",
         },
     });
 

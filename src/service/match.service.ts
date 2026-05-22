@@ -1,4 +1,4 @@
-import { MatchStatus, ResultGuess } from "../../generated/prisma/enums";
+import { MatchStatus, ResultGuess } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import { CreateMatchBody, UpdateMatchStatusBody, FinishMatchBody } from "../types/match-types";
 import { getActiveRoundService } from "./system.service";

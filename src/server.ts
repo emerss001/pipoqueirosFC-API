@@ -13,7 +13,8 @@ import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from "fast
 import fastifyApiReference from "@scalar/fastify-api-reference";
 import { startSyncCron } from "./crons/sync-cron";
 import { startConsolidatorCron } from "./crons/consolidator-cron";
-import { startTurnoverCron } from "./crons/turnover-cron";
+import { startMaestroCron } from "./crons/maestro-cron";
+import { planWeeklySetup } from "./service/weekly-setup.service";
 
 const app = Fastify({
     logger: true,
@@ -119,9 +120,17 @@ app.register(matchRoute);
 app.register(teamRoute);
 app.register(systemRoute);
 
-startSyncCron();
-startConsolidatorCron();
-startTurnoverCron();
+// startSyncCron();
+// startConsolidatorCron();
+
+// ATENÇÃO: Chamada forçada apenas para testar e popular o banco de dados agora.
+// Numa situação real, isso só rodaria na quinta-feira de madrugada via `startSyncCron()`.
+console.log("🛠️  [DEBUG] Disparando planWeeklySetup manualmente na inicialização...");
+planWeeklySetup().then(() => {
+    console.log("🛠️  [DEBUG] Setup manual finalizado. O Maestro vai assumir daqui em diante.");
+});
+
+startMaestroCron();
 
 app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
     console.log("Server running on http://localhost:3333");
