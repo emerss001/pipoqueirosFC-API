@@ -140,7 +140,18 @@ export async function syncRound(roundNumber: number) {
         });
 
         if (!existingTask) {
-            const nextExecution = new Date(now.getTime() + 5 * 60000); // Daqui a 5 min
+            // Calcula o próximo minuto múltiplo de 5, zerando segundos e milissegundos
+            const nextExecution = new Date();
+            const currentMinutes = nextExecution.getMinutes();
+            
+            // Exemplo: se são 23:10:15, (currentMinutes % 5) é 0.
+            // 5 - 0 = 5. Então ele soma 5 minutos -> 23:15.
+            // Exemplo 2: se são 23:12:30, (currentMinutes % 5) é 2.
+            // 5 - 2 = 3. Então ele soma 3 minutos -> 23:15.
+            const minutesToAdd = 5 - (currentMinutes % 5);
+            
+            nextExecution.setMinutes(currentMinutes + minutesToAdd, 0, 0); // Zera segundos e milissegundos
+            
             await prisma.scheduledTask.create({
                 data: {
                     taskName: 'SYNC_MATCHES',
