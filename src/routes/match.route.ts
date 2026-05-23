@@ -24,7 +24,7 @@ export async function matchRoute(app: FastifyInstance) {
                         z.object({
                             id: z.number(),
                             externalId: z.number(),
-                            matchDate: z.string(),
+                            matchDate: z.date(),
                             status: z.enum(["SCHEDULED", "IN_PROGRESS", "FINISHED"]),
                             awayScore: z.number().nullable(),
                             homeScore: z.number().nullable(),
@@ -48,7 +48,7 @@ export async function matchRoute(app: FastifyInstance) {
                                     type: z.enum(["EXACT_SCORE", "MATCH_RESULT"]),
                                     homeScoreGuess: z.number().nullable(),
                                     awayScoreGuess: z.number().nullable(),
-                                    matchResultGuess: z.enum(["HOME_WIN", "AWAY_WIN", "DRAW"]).nullable(),
+                                    resultGuess: z.enum(["HOME_WIN", "AWAY_WIN", "DRAW"]).nullable(),
                                 }),
                             ),
                         }),

@@ -23,6 +23,7 @@ export class ErrorResponse {
 }
 
 export const errorResponseSchema = z.object({
-    code: z.number(),
+    code: z.union([z.number(), z.string()]),
     message: z.string(),
+    error: z.string().optional(),
 });
