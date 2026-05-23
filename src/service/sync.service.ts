@@ -103,17 +103,30 @@ export async function syncRound(roundNumber: number) {
         }
     }
 
-    // 5. Verificação dinâmica: Há algum jogo em andamento?
-    // Se sim, precisamos garantir que o sistema volte a consultar a API daqui a 15 minutos!
-    const inProgressMatch = apiMatches.find(m => parseMatchStatus(m.statusText) === "IN_PROGRESS");
-    
-    if (inProgressMatch) {
-        console.log(`[SyncService] Jogo(s) em andamento! Garantindo próximo agendamento...`);
+    // 5. Verificação dinâmica: Há algum jogo que precisa de monitoramento contínuo?
+    // Se há jogo rolando (IN_PROGRESS) OU jogo que já passou do horário previsto mas ainda não começou na API (atraso)
+    const nowMs = new Date().getTime();
+    const needsMonitoring = apiMatches.find((m) => {
+        const status = parseMatchStatus(m.statusText);
+        if (status === "IN_PROGRESS") return true;
+
+        if (status === "SCHEDULED") {
+            const matchStartMs = new Date(m.startTime).getTime();
+            // Se o horário atual for maior ou igual ao horário do jogo, significa que já deveria ter começado.
+            if (nowMs >= matchStartMs) {
+                return true;
+            }
+        }
+        return false;
+    });
+
+    if (needsMonitoring) {
+        console.log(`[SyncService] Jogo(s) em andamento ou atrasado(s)! Garantindo próximo agendamento...`);
         
-        // Verifica se JÁ EXISTE uma tarefa agendada para os próximos 20 minutos
+        // Verifica se JÁ EXISTE uma tarefa agendada para os próximos 10 minutos
         // para não acumularmos milhares de tarefas.
         const now = new Date();
-        const inTwentyMinutes = new Date(now.getTime() + 20 * 60000);
+        const inTenMinutes = new Date(now.getTime() + 10 * 60000);
         
         const existingTask = await prisma.scheduledTask.findFirst({
             where: {
@@ -121,13 +134,13 @@ export async function syncRound(roundNumber: number) {
                 status: 'PENDING',
                 executeAt: {
                     gt: now,
-                    lte: inTwentyMinutes
+                    lte: inTenMinutes
                 }
             }
         });
 
         if (!existingTask) {
-            const nextExecution = new Date(now.getTime() + 15 * 60000); // Daqui a 15 min
+            const nextExecution = new Date(now.getTime() + 5 * 60000); // Daqui a 5 min
             await prisma.scheduledTask.create({
                 data: {
                     taskName: 'SYNC_MATCHES',
