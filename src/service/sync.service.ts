@@ -1,6 +1,7 @@
 import { prisma } from "../lib/prisma";
 import { ApiCompetitor } from "../types/api-sports";
 import { fetchRoundMatches } from "./api-sports.service";
+import { finishMatchService } from "./match.service";
 
 // Função auxiliar para converter o texto da API para o  Enum MatchStatus
 function parseMatchStatus(statusText: string) {
@@ -82,6 +83,21 @@ export async function syncRound(roundNumber: number) {
             });
 
             console.log(`[Sincronizado] ${homeTeam.name} x ${awayTeam.name} - Status: ${matchStatus}`);
+
+            // Distribui os pontos se o jogo acabou e ainda não foram calculados
+            if (
+                matchStatus === "FINISHED" &&
+                !savedMatch.pointsCalculated &&
+                savedMatch.homeScore !== null &&
+                savedMatch.awayScore !== null
+            ) {
+                console.log(`[SyncService] Jogo ${savedMatch.id} encerrado. Acionando distribuição de pontos...`);
+                await finishMatchService(savedMatch.id, {
+                    home_score: savedMatch.homeScore,
+                    away_score: savedMatch.awayScore,
+                });
+                console.log(`[SyncService] Pontos distribuídos com sucesso para o jogo ${savedMatch.id}!`);
+            }
         } catch (error) {
             console.error(`Erro ao sincronizar partida ID ${apiMatch.id}:`, error);
         }

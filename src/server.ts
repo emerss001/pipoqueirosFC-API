@@ -11,8 +11,6 @@ import cors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
 import fastifyApiReference from "@scalar/fastify-api-reference";
-import { startSyncCron } from "./crons/sync-cron";
-import { startConsolidatorCron } from "./crons/consolidator-cron";
 import { startMaestroCron } from "./crons/maestro-cron";
 import { planWeeklySetup } from "./service/weekly-setup.service";
 
@@ -120,15 +118,12 @@ app.register(matchRoute);
 app.register(teamRoute);
 app.register(systemRoute);
 
-// startSyncCron();
-// startConsolidatorCron();
-
 // ATENÇÃO: Chamada forçada apenas para testar e popular o banco de dados agora.
-// Numa situação real, isso só rodaria na quinta-feira de madrugada via `startSyncCron()`.
-console.log("🛠️  [DEBUG] Disparando planWeeklySetup manualmente na inicialização...");
-planWeeklySetup().then(() => {
-    console.log("🛠️  [DEBUG] Setup manual finalizado. O Maestro vai assumir daqui em diante.");
-});
+// Numa situação real, o Turnover via maestro cuidaria do planWeeklySetup.
+// console.log("🛠️  [DEBUG] Disparando planWeeklySetup manualmente na inicialização...");
+// planWeeklySetup().then(() => {
+//     console.log("🛠️  [DEBUG] Setup manual finalizado. O Maestro vai assumir daqui em diante.");
+// });
 
 startMaestroCron();
 

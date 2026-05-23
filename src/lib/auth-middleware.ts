@@ -13,7 +13,7 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
     }
 
     // Anexa o usuário à requisição para uso posterior
-    (request as any).user = session.user;
+    request.user = session.user;
 }
 
 export async function adminMiddleware(request: FastifyRequest, reply: FastifyReply) {
@@ -34,5 +34,5 @@ export async function adminMiddleware(request: FastifyRequest, reply: FastifyRep
         return reply.status(403).send({ message: "Forbidden: Admins only" });
     }
 
-    (request as any).user = dbUser;
+    request.user = dbUser;
 }

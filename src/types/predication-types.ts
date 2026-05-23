@@ -1,7 +1,6 @@
 import z from "zod";
 
 export interface createPredicationParams {
-    userId: string;
     matchId: number;
     predicationType: "EXACT_SCORE" | "MATCH_RESULT";
     home_score_guess: number | null;
@@ -11,7 +10,6 @@ export interface createPredicationParams {
 }
 
 export const createPredicationSchema = z.object({
-    userId: z.string(),
     matchId: z.number(),
     predicationType: z.enum(["EXACT_SCORE", "MATCH_RESULT"]),
     home_score_guess: z.number().nullable().optional(),

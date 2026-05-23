@@ -3,6 +3,8 @@ import { createPredicationController } from "../controller/predication.controlle
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { createPredicationSchema } from "../types/predication-types";
 import { authMiddleware } from "../lib/auth-middleware";
+import z from "zod";
+import { errorResponseSchema } from "../types/api-response";
 
 export async function predicationRoute(app: FastifyInstance) {
     const publicServer = app.withTypeProvider<ZodTypeProvider>();
@@ -16,12 +18,23 @@ export async function predicationRoute(app: FastifyInstance) {
             description: "[🔒 Autenticado] Criar uma nova predição (palpite)",
             body: createPredicationSchema,
             security: [{ bearerAuth: [] }],
+            response: {
+                201: z.object({
+                    id: z.number(),
+                    userId: z.string(),
+                    matchId: z.number(),
+                    bettingGroupId: z.number(),
+                    type: z.enum(["EXACT_SCORE", "MATCH_RESULT"]),
+                    homeScoreGuess: z.number().nullable(),
+                    awayScoreGuess: z.number().nullable(),
+                    resultGuess: z.enum(["HOME_WIN", "AWAY_WIN", "DRAW"]).nullable(),
+                    pointsEarned: z.number(),
+                }),
+                400: errorResponseSchema,
+                404: errorResponseSchema,
+                500: errorResponseSchema,
+            },
         },
         handler: createPredicationController,
     });
-
-    // app.get("/predications/:id", findPredicationByIdController);
-    // app.get("/predications", findAllPredicationsController);
-    // app.put("/predications/:id", updatePredicationController);
-    // app.delete("/predications/:id", deletePredicationController);
 }

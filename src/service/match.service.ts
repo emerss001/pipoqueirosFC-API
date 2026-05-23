@@ -39,8 +39,8 @@ export async function finishMatchService(matchId: number, data: FinishMatchBody)
     }
 
     // Trava de segurança: impede que a partida receba pontos em dobro
-    if (existingMatch.status === MatchStatus.FINISHED || existingMatch.pointsCalculated) {
-        throw new Error("A partida já foi encerrada ou os pontos já foram calculados.");
+    if (existingMatch.pointsCalculated) {
+        throw new Error("A partida já teve os pontos calculados.");
     }
 
     // 2. Descobre o resultado oficial na vida real
@@ -115,24 +115,55 @@ export async function finishMatchService(matchId: number, data: FinishMatchBody)
     };
 }
 
-export async function getCurrentRoundMatchesService() {
+export async function getCurrentRoundMatchesService(userId: string) {
     const activeRound = await getActiveRoundService();
 
     const matches = await prisma.match.findMany({
         where: {
             round: activeRound,
         },
-        include: {
-            homeTeam: true,
-            awayTeam: true,
+        select: {
+            id: true,
+            externalId: true,
+            matchDate: true,
+            status: true,
+            awayScore: true,
+            homeScore: true,
+            homeTeam: {
+                select: {
+                    id: true,
+                    externalId: true,
+                    name: true,
+                    abbreviatedName: true,
+                    shieldUrl: true,
+                },
+            },
+            awayTeam: {
+                select: {
+                    id: true,
+                    externalId: true,
+                    name: true,
+                    abbreviatedName: true,
+                    shieldUrl: true,
+                },
+            },
+            predictions: {
+                where: {
+                    userId,
+                },
+                select: {
+                    id: true,
+                    type: true,
+                    homeScoreGuess: true,
+                    awayScoreGuess: true,
+                    resultGuess: true,
+                },
+            },
         },
         orderBy: {
             matchDate: "asc",
         },
     });
 
-    return {
-        round: activeRound,
-        matches,
-    };
+    return matches;
 }

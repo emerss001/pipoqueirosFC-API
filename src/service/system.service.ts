@@ -1,3 +1,4 @@
+import { AppError } from "../errors/app-error";
 import { prisma } from "../lib/prisma";
 import { planWeeklySetup } from "./weekly-setup.service";
 
@@ -7,22 +8,10 @@ export async function getActiveRoundService() {
     });
 
     if (!settings) {
-        settings = await prisma.systemSettings.create({
-            data: { id: 1, currentActiveRound: 1 },
-        });
+        throw new AppError("Sem configurações do sistema encontradas", 404);
     }
 
     return settings.currentActiveRound;
-}
-
-export async function updateActiveRoundService(round: number) {
-    const settings = await prisma.systemSettings.upsert({
-        where: { id: 1 },
-        update: { currentActiveRound: round },
-        create: { id: 1, currentActiveRound: round },
-    });
-
-    return settings;
 }
 
 /**

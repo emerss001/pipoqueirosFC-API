@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma';
 import { TaskStatus } from '@prisma/client';
 import { syncRound } from '../service/sync.service';
 import { executeTurnover } from '../service/system.service';
+import { planWeeklySetup } from '../service/weekly-setup.service';
 
 /**
  * Maestro Cron - O Orquestrador Dinâmico
@@ -61,8 +62,8 @@ export function startMaestroCron() {
               break;
 
             case 'WEEKLY_SETUP':
-              // Esse seria o serviço que roda na quinta-feira pra agendar os próximos!
-              console.log(`[Maestro Cron] WEEKLY_SETUP executado (placeholder)`);
+              await planWeeklySetup();
+              console.log(`[Maestro Cron] WEEKLY_SETUP executado com sucesso`);
               break;
 
             default:

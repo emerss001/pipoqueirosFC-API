@@ -1,28 +1,40 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { createPredicationParams } from "../types/predication-types";
 import { createPredicationService } from "../service/predication.service";
+import { SuccessResponse, ErrorResponse } from "../types/api-response";
+import { getUser } from "../helpers/get-user";
+import { AppError } from "../errors/app-error";
 
 export async function createPredicationController(request: FastifyRequest, reply: FastifyReply) {
-    const { userId, matchId, predicationType, home_score_guess, away_score_guess, result_guess, bettingGroupId } =
+    const user = getUser(request);
+    const { matchId, predicationType, home_score_guess, away_score_guess, result_guess, bettingGroupId } =
         request.body as createPredicationParams;
 
-    if (!userId || !matchId || !predicationType || bettingGroupId === undefined) {
-        return reply.status(400).send({ error: "User ID, Match ID, Predication Type, and Betting Group ID are required" });
+    if (!matchId || !predicationType || !bettingGroupId) {
+        return reply
+            .status(400)
+            .send(new ErrorResponse(400, "Id da partida, Tipo de palpite, e o id do bolão são obrigatórios"));
     }
 
     try {
-        const predication = await createPredicationService({
-            userId,
-            matchId,
-            predicationType,
-            home_score_guess,
-            away_score_guess,
-            result_guess,
-            bettingGroupId,
-        });
-        return reply.status(201).send(predication);
+        const predication = await createPredicationService(
+            {
+                matchId,
+                predicationType,
+                home_score_guess,
+                away_score_guess,
+                result_guess,
+                bettingGroupId,
+            },
+            user.id,
+        );
+        return reply.status(201).send(new SuccessResponse(201, "Predication created successfully", predication));
     } catch (error) {
         console.error("Error creating predication:", error);
-        return reply.status(500).send({ error: "An error occurred while creating the predication" });
+        if (error instanceof AppError) {
+            return reply.status(error.statusCode).send(new ErrorResponse(error.statusCode, error.message));
+        }
+
+        return reply.status(500).send(new ErrorResponse(500, "Ocorreu um erro ao criar o palpite"));
     }
 }

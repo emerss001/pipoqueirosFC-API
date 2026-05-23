@@ -1,10 +1,20 @@
+import { AppError } from "../errors/app-error";
 import { prisma } from "../lib/prisma";
 import { createPredicationParams } from "../types/predication-types";
 
-export async function createPredicationService(params: createPredicationParams) {
+export async function createPredicationService(params: createPredicationParams, userId: string) {
+    const match = await prisma.match.findUnique({
+        where: { id: params.matchId },
+        select: { id: true },
+    });
+
+    if (!match) {
+        throw new AppError("Partida não encontrada", 404);
+    }
+
     const predication = await prisma.prediction.create({
         data: {
-            userId: params.userId,
+            userId: userId,
             matchId: params.matchId,
             type: params.predicationType,
             homeScoreGuess: params.home_score_guess ?? null,
