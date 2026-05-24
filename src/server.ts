@@ -129,5 +129,5 @@ startMaestroCron();
 
 app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
     console.log("Server running on http://localhost:3333");
-    console.log("------ versão última do código 1.0.0 ------");
+    console.log("------ versão última do código 1.0.3 ------");
 });
