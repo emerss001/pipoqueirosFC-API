@@ -7,3 +7,10 @@ export async function userFindByIdService(id: string) {
 
     return user;
 }
+
+export async function updateUserProfilePictureService(userId: string, imageUrl: string) {
+    return prisma.user.update({
+        where: { id: userId },
+        data: { image: imageUrl },
+    });
+}

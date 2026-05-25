@@ -8,6 +8,7 @@ import { teamRoute } from "./routes/team.route";
 import { systemRoute } from "./routes/system.route";
 import { auth } from "./lib/auth";
 import cors from "@fastify/cors";
+import fastifyMultipart from "@fastify/multipart";
 import fastifySwagger from "@fastify/swagger";
 import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
 import fastifyApiReference from "@scalar/fastify-api-reference";
@@ -24,6 +25,12 @@ app.setSerializerCompiler(serializerCompiler);
 app.register(cors, {
     origin: "*",
     credentials: true,
+});
+
+app.register(fastifyMultipart, {
+    limits: {
+        fileSize: 18 * 1024 * 1024, // 18MB limit
+    },
 });
 
 app.get("/swagger.json", async () => {

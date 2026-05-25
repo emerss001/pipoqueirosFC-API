@@ -1,7 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { userFindByIdService } from "../service/users.service";
+import "@fastify/multipart";
+import { userFindByIdService, updateUserProfilePictureService } from "../service/users.service";
 import { SuccessResponse, ErrorResponse } from "../types/api-response";
 import { AppError } from "../errors/app-error";
+import { utapi } from "../lib/uploadthing";
+import { getUser } from "../helpers/get-user";
 
 export async function userFindById(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: string };
@@ -55,6 +58,45 @@ export async function getAddressUser(request: FastifyRequest, reply: FastifyRepl
         return reply.status(200).send(new SuccessResponse(200, "Address found", address));
     } catch (error) {
         console.error("Error in getAddressUser:", error);
+        if (error instanceof AppError) {
+            return reply.status(error.statusCode).send(new ErrorResponse(error.statusCode, error.message));
+        }
+        return reply.status(500).send(new ErrorResponse(500, "Internal Server Error"));
+    }
+}
+
+export async function updateProfilePicture(request: FastifyRequest, reply: FastifyReply) {
+    const user = getUser(request);
+    const id = user.id;
+    if (!id) {
+        throw new AppError("User ID is required", 400);
+    }
+
+    const data = await request.file();
+    if (!data) {
+        throw new AppError("No file provided", 400);
+    }
+
+    const buffer = await data.toBuffer();
+    const file = new File([new Uint8Array(buffer)], data.filename, { type: data.mimetype });
+
+    try {
+        const response = await utapi.uploadFiles(file);
+
+        if (response.error) {
+            throw new AppError(`Upload failed: ${response.error.message}`, 500);
+        }
+
+        const updatedUser = await updateUserProfilePictureService(id, response.data.ufsUrl);
+
+        return reply.status(200).send(
+            new SuccessResponse(200, "Profile picture updated successfully", {
+                url: response.data.ufsUrl,
+                user: updatedUser,
+            }),
+        );
+    } catch (error) {
+        console.error("Error updating profile picture:", error);
         if (error instanceof AppError) {
             return reply.status(error.statusCode).send(new ErrorResponse(error.statusCode, error.message));
         }
