@@ -115,3 +115,52 @@ export async function getBettingGroupRankingService(code: string) {
 
     return ranking;
 }
+
+export async function getUserBettingGroupsService(userId: string) {
+    const userExists = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true },
+    });
+
+    if (!userExists) {
+        throw new AppError("Usuário não encontrado", 404);
+    }
+
+    const bettingGroups = await prisma.bettingGroup.findMany({
+        where: {
+            participants: {
+                some: {
+                    userId,
+                },
+            },
+        },
+        select: {
+            id: true,
+            name: true,
+            code: true,
+            createdAt: true,
+            creator: {
+                select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                },
+            },
+            participants: {
+                select: {
+                    score: true,
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    return bettingGroups;
+}
+

@@ -6,6 +6,7 @@ import {
     createBettingGroupService,
     findBettingGroupByCodeService,
     getBettingGroupRankingService,
+    getUserBettingGroupsService,
 } from "../service/betting-group.service";
 
 import { AppError } from "../errors/app-error";
@@ -98,3 +99,24 @@ export async function getBettingGroupRankingController(request: FastifyRequest, 
         return reply.status(500).send(new ErrorResponse(500, "Ocorreu um erro ao buscar o ranking do bolão"));
     }
 }
+
+export async function getUserBettingGroupsController(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as { id: string };
+
+    if (!id) {
+        return reply.status(400).send(new ErrorResponse(400, "O ID do usuário é obrigatório"));
+    }
+
+    try {
+        const bettingGroups = await getUserBettingGroupsService(id);
+        return reply.status(200).send(new SuccessResponse(200, "Bolões do usuário encontrados com sucesso", bettingGroups));
+    } catch (error) {
+        console.error("Error fetching user betting groups:", error);
+        if (error instanceof AppError) {
+            return reply.status(error.statusCode).send(new ErrorResponse(error.statusCode, error.message));
+        }
+
+        return reply.status(500).send(new ErrorResponse(500, "Ocorreu um erro ao buscar os bolões do usuário"));
+    }
+}
+

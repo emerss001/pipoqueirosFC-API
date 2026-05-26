@@ -31,11 +31,12 @@ export async function getAddressUser(request: FastifyRequest, reply: FastifyRepl
 
     try {
         const response = await fetch(
-            `https://api.opencagedata.com/geocode/v1/json?key=${process.env.OPENCAGE_API_KEY}&q=${latitude}%2C${longitude}&pretty=1&no_annotations=1`,
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`,
             {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json",
+                    "User-Agent": "PipoqueirosFC/1.0",
+                    "Accept-Language": "pt-BR",
                 },
             },
         );
@@ -46,13 +47,13 @@ export async function getAddressUser(request: FastifyRequest, reply: FastifyRepl
 
         const data = await response.json();
 
-        if (!data || !data.results || data.results.length === 0) {
+        if (!data || !data.address) {
             throw new AppError("No address found for the provided coordinates", 404);
         }
 
         const address = {
-            city: data.results[0].components._normalized_city || data.results[0].components.town || "Unknown",
-            state: data.results[0].components.state_code || "Unknown",
+            city: data.address.city || data.address.town || data.address.village || data.address.municipality || "Unknown",
+            state: data.address.state || "Unknown",
         };
 
         return reply.status(200).send(new SuccessResponse(200, "Address found", address));

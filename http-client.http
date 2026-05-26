@@ -18,3 +18,7 @@ Content-Type: application/json
     "userId": "7718e794-a6a3-4e94-a578-d6e390ef5944",
     "bettingGroupId": "YJD6UE"
 }
+
+### Listar bolões de um usuário específico
+GET http://localhost:3333/users/85b11e38-3306-4690-85bb-859f65b6de16/betting-groups
+Authorization: Bearer <insira_o_token_aqui>
