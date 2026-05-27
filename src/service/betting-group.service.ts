@@ -163,4 +163,3 @@ export async function getUserBettingGroupsService(userId: string) {
 
     return bettingGroups;
 }
-

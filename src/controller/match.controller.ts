@@ -5,10 +5,11 @@ import { AppError } from "../errors/app-error";
 import { getUser } from "../helpers/get-user";
 
 export async function getCurrentRoundMatches(request: FastifyRequest, reply: FastifyReply) {
+    const { bettingGroupCode } = request.params as { bettingGroupCode: string };
     const user = getUser(request);
 
     try {
-        const result = await getCurrentRoundMatchesService(user.id);
+        const result = await getCurrentRoundMatchesService(user.id, bettingGroupCode);
         return reply.status(200).send(new SuccessResponse(200, "Partidas da rodada atual", result));
     } catch (error) {
         console.error(error);

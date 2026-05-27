@@ -26,11 +26,15 @@ export async function bettingGroupRoute(app: FastifyInstance) {
             security: [{ bearerAuth: [] }],
             response: {
                 201: z.object({
-                    name: z.string(),
-                    id: z.number(),
-                    createdAt: z.date(),
-                    code: z.string(),
-                    creatorId: z.string(),
+                    code: z.number(),
+                    message: z.string(),
+                    data: z.object({
+                        name: z.string(),
+                        id: z.number(),
+                        createdAt: z.date(),
+                        code: z.string(),
+                        creatorId: z.string(),
+                    }),
                 }),
                 400: errorResponseSchema,
                 500: errorResponseSchema,
@@ -52,19 +56,23 @@ export async function bettingGroupRoute(app: FastifyInstance) {
             security: [{ bearerAuth: [] }],
             response: {
                 200: z.object({
-                    id: z.number(),
-                    name: z.string(),
-                    creator: z.object({
+                    code: z.number(),
+                    message: z.string(),
+                    data: z.object({
+                        id: z.number(),
                         name: z.string(),
-                    }),
-                    participants: z.array(
-                        z.object({
-                            user: z.object({
-                                name: z.string(),
-                                image: z.string().nullable(),
-                            }),
+                        creator: z.object({
+                            name: z.string(),
                         }),
-                    ),
+                        participants: z.array(
+                            z.object({
+                                user: z.object({
+                                    name: z.string(),
+                                    image: z.string().nullable(),
+                                }),
+                            }),
+                        ),
+                    }),
                 }),
                 400: errorResponseSchema,
                 404: errorResponseSchema,
@@ -111,7 +119,9 @@ export async function bettingGroupRoute(app: FastifyInstance) {
             security: [{ bearerAuth: [] }],
             response: {
                 200: z.object({
-                    ranking: z.array(
+                    code: z.number(),
+                    message: z.string(),
+                    data: z.array(
                         z.object({
                             user: z.object({
                                 name: z.string(),

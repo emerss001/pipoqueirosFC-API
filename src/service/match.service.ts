@@ -2,6 +2,7 @@ import { MatchStatus, ResultGuess } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import { CreateMatchBody, UpdateMatchStatusBody, FinishMatchBody } from "../types/match-types";
 import { getActiveRoundService } from "./system.service";
+import { AppError } from "../errors/app-error";
 
 // export async function createMatchService(data: CreateMatchBody) {
 //     const match = await prisma.match.create({
@@ -115,8 +116,21 @@ export async function finishMatchService(matchId: number, data: FinishMatchBody)
     };
 }
 
-export async function getCurrentRoundMatchesService(userId: string) {
+export async function getCurrentRoundMatchesService(userId: string, code: string) {
     const activeRound = await getActiveRoundService();
+
+    const bettingGroup = await prisma.bettingGroup.findFirst({
+        where: {
+            code,
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    if (!bettingGroup) {
+        throw new AppError("Bolão não encontrado", 404);
+    }
 
     const matches = await prisma.match.findMany({
         where: {
@@ -150,6 +164,7 @@ export async function getCurrentRoundMatchesService(userId: string) {
             predictions: {
                 where: {
                     userId,
+                    bettingGroupId: bettingGroup.id,
                 },
                 select: {
                     id: true,

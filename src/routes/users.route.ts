@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
+import { getAddressUser, userFindById } from "../controller/user.controller";
 import { getUserBettingGroupsController } from "../controller/betting-group.controller";
-import { getAddressUser, userFindById, updateProfilePicture } from "../controller/user.controller";
+import { updateProfilePicture } from "../controller/user.controller";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import { authMiddleware } from "../lib/auth-middleware";
@@ -47,6 +48,22 @@ export async function usersRoute(app: FastifyInstance) {
             params: z.object({
                 id: z.string(),
             }),
+            response: {
+                200: z.object({
+                    code: z.number(),
+                    message: z.string(),
+                    data: z.object({
+                        id: z.string(),
+                        name: z.string(),
+                        email: z.string(),
+                        image: z.string().nullable(),
+                        createdAt: z.date(),
+                    }),
+                }),
+                400: errorResponseSchema,
+                404: errorResponseSchema,
+                500: errorResponseSchema,
+            },
             security: [{ bearerAuth: [] }],
         },
         handler: userFindById,
@@ -54,63 +71,24 @@ export async function usersRoute(app: FastifyInstance) {
 
     publicServer.route({
         method: "GET",
-        url: "/users/:id/betting-groups",
+        url: "/users/betting-groups",
         preHandler: [authMiddleware],
         schema: {
             tags: ["Users"],
-            description: "[🔒 Autenticado] Buscar bolões de um usuário específico",
-            params: z.object({
-                id: z.string(),
-            }),
-            security: [{ bearerAuth: [] }],
-        method: "PATCH",
-        url: "/users/avatar",
-        preHandler: [authMiddleware],
-        schema: {
-            tags: ["Users"],
-            description: "[🔒 Autenticado] Atualizar imagem de perfil do usuário",
-            consumes: ["multipart/form-data"],
-            response: {
-                200: z.object({
-                    code: z.number(),
-                    message: z.string(),
-                    data: z.array(
-                        z.object({
-                            id: z.number(),
-                            name: z.string(),
-                            code: z.string(),
-                            createdAt: z.date(),
-                            creator: z.object({
-                                id: z.string(),
-                                name: z.string(),
-                                image: z.string().nullable(),
-                            }),
-                            participants: z.array(
-                                z.object({
-                                    score: z.number(),
-                                    user: z.object({
-                                        id: z.string(),
-                                        name: z.string(),
-                                        image: z.string().nullable(),
-                                    }),
-                                })
-                            ),
-                        })
-                    ),
-                    data: z.object({
-                        url: z.string(),
-                        user: z.any(),
-                    }),
-                }),
-                400: errorResponseSchema,
-                404: errorResponseSchema,
-                500: errorResponseSchema,
-            },
+            description: "[🔒 Autenticado] Buscar bolões do usuário autenticado",
         },
+
         handler: getUserBettingGroupsController,
-            security: [{ bearerAuth: [] }],
+    });
+
+    publicServer.route({
+        method: "PUT",
+        url: "/users/profile-picture",
+        preHandler: [authMiddleware],
+        schema: {
+            tags: ["Users"],
+            description: "[🔒 Autenticado] Atualizar foto de perfil do usuário autenticado",
         },
         handler: updateProfilePicture,
     });
 }
-

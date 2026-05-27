@@ -101,7 +101,8 @@ export async function getBettingGroupRankingController(request: FastifyRequest, 
 }
 
 export async function getUserBettingGroupsController(request: FastifyRequest, reply: FastifyReply) {
-    const { id } = request.params as { id: string };
+    const user = getUser(request);
+    const id = user.id;
 
     if (!id) {
         return reply.status(400).send(new ErrorResponse(400, "O ID do usuário é obrigatório"));
@@ -109,7 +110,9 @@ export async function getUserBettingGroupsController(request: FastifyRequest, re
 
     try {
         const bettingGroups = await getUserBettingGroupsService(id);
-        return reply.status(200).send(new SuccessResponse(200, "Bolões do usuário encontrados com sucesso", bettingGroups));
+        return reply
+            .status(200)
+            .send(new SuccessResponse(200, "Bolões do usuário encontrados com sucesso", bettingGroups));
     } catch (error) {
         console.error("Error fetching user betting groups:", error);
         if (error instanceof AppError) {
@@ -119,4 +122,3 @@ export async function getUserBettingGroupsController(request: FastifyRequest, re
         return reply.status(500).send(new ErrorResponse(500, "Ocorreu um erro ao buscar os bolões do usuário"));
     }
 }
-
