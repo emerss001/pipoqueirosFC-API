@@ -1,5 +1,4 @@
 import { FastifyInstance } from "fastify";
-import { getAddressUser, userFindById } from "../controller/user.controller";
 import { getUserBettingGroupsController } from "../controller/betting-group.controller";
 import { getAddressUser, userFindById, updateProfilePicture } from "../controller/user.controller";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
