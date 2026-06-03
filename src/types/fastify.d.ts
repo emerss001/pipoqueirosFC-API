@@ -3,8 +3,8 @@ import { User } from "better-auth";
 
 declare module "fastify" {
     interface FastifyRequest {
-        // Anexamos a interface de User no Request. 
-        // Usamos interseção para incluir a 'role' caso o Prisma estenda o usuário padrão
-        user?: User & { role?: string };
+        // Anexamos a interface de User no Request.
+        // Usamos interseção para incluir a 'role', 'state' e 'city' caso o Prisma estenda o usuário padrão
+        user?: User & { role?: string; state?: string; city?: string };
     }
 }

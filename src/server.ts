@@ -14,6 +14,7 @@ import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from "fast
 import fastifyApiReference from "@scalar/fastify-api-reference";
 import { startMaestroCron } from "./crons/maestro-cron";
 import { planWeeklySetup } from "./service/weekly-setup.service";
+import { rankingRoute } from "./routes/ranking.route";
 
 const app = Fastify({
     logger: true,
@@ -124,6 +125,7 @@ app.register(predicationRoute);
 app.register(matchRoute);
 app.register(teamRoute);
 app.register(systemRoute);
+app.register(rankingRoute);
 
 // ATENÇÃO: Chamada forçada apenas para testar e popular o banco de dados agora.
 // Numa situação real, o Turnover via maestro cuidaria do planWeeklySetup.
