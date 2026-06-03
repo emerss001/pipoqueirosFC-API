@@ -30,7 +30,7 @@ export async function getRankingByStateController(request: FastifyRequest, reply
         }
 
         const state = user.state;
-        if (state === null || state === undefined || state.length !== 2) {
+        if (state === null || state === undefined) {
             return reply.status(400).send(new ErrorResponse(400, "O estado deve ser representado por 2 caracteres"));
         }
 
