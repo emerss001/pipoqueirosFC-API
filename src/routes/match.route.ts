@@ -10,14 +10,14 @@ export async function matchRoute(app: FastifyInstance) {
 
     publicServer.route({
         method: "GET",
-        url: "/matches/current/:code",
+        url: "/matches/current/:bettingGroupCode",
         preHandler: [authMiddleware],
         schema: {
             tags: ["Matches"],
             description: "[🔒 Autenticado] Buscar partidas da rodada atual",
             security: [{ bearerAuth: [] }],
             params: z.object({
-                code: z.string(),
+                bettingGroupCode: z.string(),
             }),
             response: {
                 200: z.object({

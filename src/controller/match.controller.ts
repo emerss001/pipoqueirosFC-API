@@ -8,6 +8,8 @@ export async function getCurrentRoundMatches(request: FastifyRequest, reply: Fas
     const { bettingGroupCode } = request.params as { bettingGroupCode: string };
     const user = getUser(request);
 
+    console.log(">>>>>>:" + bettingGroupCode);
+
     try {
         const result = await getCurrentRoundMatchesService(user.id, bettingGroupCode);
         return reply.status(200).send(new SuccessResponse(200, "Partidas da rodada atual", result));

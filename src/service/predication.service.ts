@@ -12,6 +12,19 @@ export async function createPredicationService(params: createPredicationParams, 
         throw new AppError("Partida não encontrada", 404);
     }
 
+    const existingPrediction = await prisma.prediction.findFirst({
+        where: {
+            userId: userId,
+            matchId: params.matchId,
+            type: params.predicationType,
+            bettingGroupId: params.bettingGroupId,
+        },
+    });
+
+    if (existingPrediction) {
+        throw new AppError("Este palpite já foi feito para esta partida neste bolão", 400);
+    }
+
     const predication = await prisma.prediction.create({
         data: {
             userId: userId,
