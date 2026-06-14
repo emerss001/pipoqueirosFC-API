@@ -12,12 +12,21 @@ export async function createPredicationService(params: createPredicationParams, 
         throw new AppError("Partida não encontrada", 404);
     }
 
+    const bettingGroup = await prisma.bettingGroup.findUnique({
+        where: { code: params.bettingGroupCode },
+        select: { id: true },
+    });
+
+    if (!bettingGroup) {
+        throw new AppError("Bolão não encontrado", 404);
+    }
+
     const existingPrediction = await prisma.prediction.findFirst({
         where: {
             userId: userId,
             matchId: params.matchId,
             type: params.predicationType,
-            bettingGroupId: params.bettingGroupId,
+            bettingGroupId: bettingGroup.id,
         },
     });
 
@@ -33,7 +42,7 @@ export async function createPredicationService(params: createPredicationParams, 
             homeScoreGuess: params.home_score_guess ?? null,
             awayScoreGuess: params.away_score_guess ?? null,
             resultGuess: params.result_guess ?? null,
-            bettingGroupId: params.bettingGroupId,
+            bettingGroupId: bettingGroup.id,
         },
     });
 

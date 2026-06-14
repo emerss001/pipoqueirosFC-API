@@ -6,7 +6,7 @@ export interface createPredicationParams {
     home_score_guess: number | null;
     away_score_guess: number | null;
     result_guess: "HOME_WIN" | "AWAY_WIN" | "DRAW" | null;
-    bettingGroupId: number;
+    bettingGroupCode: string;
 }
 
 export const createPredicationSchema = z.object({
@@ -15,5 +15,5 @@ export const createPredicationSchema = z.object({
     home_score_guess: z.number().nullable().optional(),
     away_score_guess: z.number().nullable().optional(),
     result_guess: z.enum(["HOME_WIN", "AWAY_WIN", "DRAW"]).nullable().optional(),
-    bettingGroupId: z.number(),
+    bettingGroupCode: z.string(),
 });

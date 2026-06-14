@@ -7,13 +7,13 @@ import { AppError } from "../errors/app-error";
 
 export async function createPredicationController(request: FastifyRequest, reply: FastifyReply) {
     const user = getUser(request);
-    const { matchId, predicationType, home_score_guess, away_score_guess, result_guess, bettingGroupId } =
+    const { matchId, predicationType, home_score_guess, away_score_guess, result_guess, bettingGroupCode } =
         request.body as createPredicationParams;
 
-    if (!matchId || !predicationType || !bettingGroupId) {
+    if (!matchId || !predicationType || !bettingGroupCode) {
         return reply
             .status(400)
-            .send(new ErrorResponse(400, "Id da partida, Tipo de palpite, e o id do bolão são obrigatórios"));
+            .send(new ErrorResponse(400, "Id da partida, Tipo de palpite, e o código do bolão são obrigatórios"));
     }
 
     try {
@@ -24,7 +24,7 @@ export async function createPredicationController(request: FastifyRequest, reply
                 home_score_guess,
                 away_score_guess,
                 result_guess,
-                bettingGroupId,
+                bettingGroupCode,
             },
             user.id,
         );
